@@ -1,0 +1,7 @@
+Le feature devono essere statiche
+Per le feature non mi piace il fatto che salvo il job, non vorrei salvarlo, nemmeno in quale macchina lavoro.
+Questo perché il mio grafo avrà dei nodi che sono nodi operazioni e nodi macchina
+Nei nodi operazioni sicuramente le feature che voglio mettere sono:
+- numero dell'operazione di un determinato job
+- quante operazioni mancano dopo quella
+- tempo che ci mette a fare una certa operazione

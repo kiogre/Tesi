@@ -141,6 +141,7 @@ def build_jsp_graph(S_seq):
             op_id,                    # 0: quale operazione è (0, 1, 2, ...)
             normalized_proc_time,     # 1: processing time normalizzato
             remaining_ops,            # 2: quante operazioni mancano
+            1,                        # 3: tipologia del nodo (1 = operazione)
         ]
         
         G.add_node(op_node, 
@@ -167,6 +168,7 @@ def build_jsp_graph(S_seq):
             -1,                              # 0: flag "è macchina"
             machine_workload / 1000.0,       # 1: carico totale normalizzato
             num_ops_on_machine,              # 2: numero operazioni
+            0,                               # 3: tipologia del nodo (0 = macchina)
         ]
         
         G.add_node(machine_node,

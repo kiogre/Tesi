@@ -20,7 +20,7 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=50, batch_size=512, resum
     # Inizializza modello
     d_model = 128
     if graph:
-        encoder = nn.GCNEncoder(n_conv=3, d_model=d_model, n_features=3).to(device)
+        encoder = nn.GCNEncoder(n_conv=3, d_model=d_model, n_features=4).to(device)
     else:
         encoder = nn.Lion17Encoder(d_model=d_model).to(device)
     decoder = nn.Lion17Decoder(d_model=d_model).to(device)
@@ -64,7 +64,7 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=50, batch_size=512, resum
 
 
 if __name__ == "__main__":
-    main(graph=True, resume_from_epoch=20, directory='./checkpoint_GCN_CPU/', checkpoint_dir='./checkpoint_GCN_CPU_different_lr')
+    main(graph=True, resume_from_epoch=None, directory='./checkpoint_GCN_CPU_4_features/', checkpoint_dir='./checkpoint_GCN_CPU_4_features')
     '''
     S_seq, (n_jobs, n_machines) = gen.load_orlib_instance("jobshop1.txt", "la31")
     print(f"Istanza ft06: {n_jobs} jobs x {n_machines} machines")

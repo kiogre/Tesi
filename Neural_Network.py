@@ -223,15 +223,18 @@ class GCNEncoder(nn.Module):
 
         self.conv_layers = nn.ModuleList([GCNConv(self.d_model, self.d_model, add_self_loops=True) for _ in range(1, self.n_conv)])
 
-    def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False):
+    def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
 
         x = self.first_layer(x, edge_index)
 
         for convolution in self.conv_layers:
             x = F.relu(x)
-            x = convolution(x)
+            x = convolution(x, edge_index)
 
         if batch_size is not None and seq_len is not None and change:
+            if operation_mask is not None:
+                # Filtra solo le feature dei nodi delle operazioni
+                x = x[operation_mask]
             x = x.view(batch_size, seq_len, self.d_model)
             
         return x

@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 
 class JSPTrainer:
-    def __init__(self, encoder, decoder, device, lr=1e-4):
+    def __init__(self, encoder, decoder, device, lr=1e-4, graph=False):
         self.encoder = encoder
         self.decoder = decoder
         self.optimizer = optim.Adam(
@@ -23,38 +23,61 @@ class JSPTrainer:
         )
         self.baseline = None
         self.device = device
+        self.graph = graph
     
     def train_epoch(self, dataset, batch_size=32):
         total_loss = 0
         num_batches = len(dataset) // batch_size
-        
+
         for i in tqdm(range(num_batches), total=num_batches):
             batch = dataset[i*batch_size:(i+1)*batch_size]
-            batch_tensor = torch.stack([inst.detach().clone() for inst in batch]).to(self.device)
-            
-            # Forward pass
-            encoder_outputs = self.encoder(batch_tensor)
+
+            if self.graph:
+                # Extract instance_tensor and pyg_data from the tuple
+                batch_tensors = [item[0] for item in batch]  # List of instance tensors
+                batch_pyg_data = [item[1] for item in batch]  # List of PyG Data objects
+
+                # Move the PyG Data objects to the device
+                batch_pyg_data = [data.to(self.device) for data in batch_pyg_data]
+
+                # For simplicity, process one item at a time (no batching for PyG yet)
+                data = batch_pyg_data[0]  # Take the first Data object
+                batch_tensor = batch_tensors[0].to(self.device).unsqueeze(0)  # Aggiungi dimensione batch
+
+                x = data.x.float()
+                edge_index = data.edge_index.long()
+
+                # Crea un maschera per i nodi delle operazioni basata su data.x
+                operation_mask = data.x[:, 0] != -1  # Nodi con x[:, 0] != -1 sono operazioni
+
+                encoder_outputs = self.encoder(x, edge_index, batch_size=1, seq_len=batch_tensor.size(1), 
+                                            change=True, operation_mask=operation_mask)
+
+            else:
+                batch_tensor = torch.stack([inst.detach().clone() for inst in batch]).to(self.device)
+                encoder_outputs = self.encoder(batch_tensor)
+
+            # Forward decoder
             sequences, log_probs = self.decoder(encoder_outputs, batch_tensor)
-            
-            # Calcola rewards (negative makespan)
+
+            # Calculate rewards (negative makespan)
             rewards = []
-            for b in range(batch_size):
+            for b in range(batch_tensor.size(0)):  # Usa batch_tensor.size(0) invece di len(batch)
                 makespan = self.calculate_makespan_from_sequence(sequences[b], batch_tensor[b])
-                rewards.append(-makespan)  # Negativo perché vogliamo minimizzare
-            
-            rewards = torch.tensor(rewards, dtype=torch.float32)
-            
-            # Baseline (media mobile)
+                rewards.append(-makespan)
+
+            rewards = torch.tensor(rewards, dtype=torch.float32, device=self.device)
+
+            # Baseline (moving average)
             if self.baseline is None:
                 self.baseline = rewards.mean()
             else:
                 self.baseline = 0.9 * self.baseline + 0.1 * rewards.mean()
-            
+
             # REINFORCE loss
             advantage = rewards - self.baseline
-            advantage = advantage.to(self.device)
             loss = -(log_probs.sum(dim=1) * advantage).mean()
-            
+
             # Backward pass
             self.optimizer.zero_grad()
             loss.backward()
@@ -63,10 +86,11 @@ class JSPTrainer:
                 0.5
             )
             self.optimizer.step()
-            
+
             total_loss += loss.item()
-        
+
         return total_loss / num_batches
+
 
     def indices_to_schedule(output_indices, S_seq):
         """Converte indici in scheduling effettivo"""
@@ -122,9 +146,30 @@ class JSPTrainer:
         
         with torch.no_grad():
             for i, instance in enumerate(test_dataset[:n_samples]):
-                # Forward pass
-                instance_batch = instance.unsqueeze(0).to(self.device)
-                encoder_outputs = self.encoder(instance_batch)
+                if self.graph:
+                    # instance è una tupla (instance_tensor, pyg_data)
+                    instance_tensor, pyg_data = instance
+                    instance_tensor = instance_tensor.to(self.device)
+                    pyg_data = pyg_data.to(self.device)
+                    
+                    # Estrai feature e edge_index
+                    x = pyg_data.x.float()
+                    edge_index = pyg_data.edge_index.long()
+                    
+                    # Crea una maschera per i nodi delle operazioni
+                    operation_mask = pyg_data.x[:, 0] != -1  # Nodi con x[:, 0] != -1 sono operazioni
+                    
+                    # Passa al GCNEncoder
+                    encoder_outputs = self.encoder(x, edge_index, batch_size=1, seq_len=instance_tensor.size(0), 
+                                                change=True, operation_mask=operation_mask)
+                    
+                    # Aggiungi dimensione batch per il decoder
+                    instance_batch = instance_tensor.unsqueeze(0)  # [1, seq_len, 4]
+                else:
+                    instance_batch = instance.unsqueeze(0).to(self.device)
+                    encoder_outputs = self.encoder(instance_batch)
+                
+                # Forward decoder
                 sequences, _ = self.decoder(encoder_outputs, instance_batch, training=False)
                 
                 # Calcola makespan
@@ -134,7 +179,8 @@ class JSPTrainer:
                 total_makespan += makespan
                 
                 # Confronta con soluzione ottimale (se disponibile)
-                optimal_makespan = self.solve_optimal_jsp(instance)
+                instance_for_optimal = instance_tensor if self.graph else instance
+                optimal_makespan = self.solve_optimal_jsp(instance_for_optimal)
                 if optimal_makespan > 0:
                     gap = (makespan - optimal_makespan) / optimal_makespan
                     total_gap_from_optimal += gap

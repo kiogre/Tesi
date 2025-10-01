@@ -8,7 +8,7 @@ from torch_geometric.data import Data
 # Modificare grafo #
 ####################
 
-def generate_dataset(size, n_jobs, n_machines):
+def generate_dataset(size, n_jobs, n_machines, return_graphs = False):
     """Genera dataset di istanze JSP casuali usando metodo Taillard"""
     import numpy as np
     
@@ -29,7 +29,13 @@ def generate_dataset(size, n_jobs, n_machines):
         
         # Converte in tensor
         instance_tensor = torch.tensor(operations, dtype=torch.long)
-        dataset.append(instance_tensor)
+        if return_graphs:
+            # Pre-calcola grafo
+            G, node_features = build_jsp_graph(instance_tensor)
+            pyg_data, node_mapping = get_pytorch_geometric_data(G, node_features)
+            dataset.append((instance_tensor, pyg_data))
+        else:
+            dataset.append(instance_tensor)
     
     return dataset
 
@@ -80,14 +86,14 @@ def load_orlib_instance(filename: str, instance_name: str):
 
 def build_jsp_graph(S_seq):
     """
-    Costruisce grafo da istanza JSP
+    Costruisce grafo da istanza JSP con features complete
     
     Args:
         S_seq: tensor (seq_len, 4) con [job_id, op_id, machine, processing_time]
     
     Returns:
         G: NetworkX DiGraph con nodi operazioni e macchine
-        node_features: dict con features dei nodi
+        node_features: dict con features dei nodi (ora vettori multi-dimensionali)
     """
     if isinstance(S_seq, torch.Tensor):
         S_seq = S_seq.cpu().numpy()
@@ -95,19 +101,48 @@ def build_jsp_graph(S_seq):
     G = nx.DiGraph()
     node_features = {}
     
-    # Dizionario per trovare velocemente le operazioni
-    op_nodes = {}  # (job_id, op_id) -> node_name
-    machine_nodes = {}  # machine_id -> node_name
+    # Calcola info globali per normalizzazione
+    max_proc_time = max(row[3] for row in S_seq)
+    min_proc_time = min(row[3] for row in S_seq)
     
-    # 1. Crea nodi operazioni
+    # Calcola numero operazioni per job
+    job_num_ops = {}
+    for job_id, op_id, _, _ in S_seq:
+        job_id = int(job_id)
+        if job_id not in job_num_ops:
+            job_num_ops[job_id] = 0
+        job_num_ops[job_id] = max(job_num_ops[job_id], int(op_id) + 1)
+    
+    # Dizionari
+    op_nodes = {}
+    machine_nodes = {}
+    
+    # 1. Crea nodi operazioni con features
     for idx, (job_id, op_id, machine, proc_time) in enumerate(S_seq):
         job_id, op_id, machine = int(job_id), int(op_id), int(machine)
+        proc_time = int(proc_time)
         
-        # Nome nodo operazione
         op_node = f"J{job_id}_O{op_id}"
         op_nodes[(job_id, op_id)] = op_node
         
-        # Aggiungi nodo operazione con features
+        # Calcola features
+        total_ops_in_job = job_num_ops[job_id]
+        remaining_ops = total_ops_in_job - op_id - 1  # Operazioni dopo questa
+        
+        # Normalizza processing time [0, 1]
+        if max_proc_time > min_proc_time:
+            normalized_proc_time = (proc_time - min_proc_time) / (max_proc_time - min_proc_time)
+        else:
+            normalized_proc_time = 0.5
+        
+        
+        # Features vector
+        features = [
+            op_id,                    # 0: quale operazione è (0, 1, 2, ...)
+            normalized_proc_time,     # 1: processing time normalizzato
+            remaining_ops,            # 2: quante operazioni mancano
+        ]
+        
         G.add_node(op_node, 
                    node_type='operation',
                    job_id=job_id,
@@ -115,8 +150,7 @@ def build_jsp_graph(S_seq):
                    machine=machine,
                    processing_time=proc_time)
         
-        # Feature: numero operazione (0, 1, 2, ...)
-        node_features[op_node] = op_id
+        node_features[op_node] = features
     
     # 2. Crea nodi macchine
     machines = set(int(row[2]) for row in S_seq)
@@ -124,16 +158,25 @@ def build_jsp_graph(S_seq):
         machine_node = f"M{machine_id}"
         machine_nodes[machine_id] = machine_node
         
+        # Calcola workload della macchina
+        machine_workload = sum(int(row[3]) for row in S_seq if int(row[2]) == machine_id)
+        num_ops_on_machine = sum(1 for row in S_seq if int(row[2]) == machine_id)
+        
+        # Features macchina (diverse da operazioni)
+        features = [
+            -1,                              # 0: flag "è macchina"
+            machine_workload / 1000.0,       # 1: carico totale normalizzato
+            num_ops_on_machine,              # 2: numero operazioni
+        ]
+        
         G.add_node(machine_node,
                    node_type='machine',
                    machine_id=machine_id)
         
-        # Feature: -1 per distinguere macchine da operazioni
-        node_features[machine_node] = -1
+        node_features[machine_node] = features
     
-    # 3. Archi precedenza (operazione -> operazione successiva stesso job)
+    # 3. Archi precedenza
     for (job_id, op_id), op_node in op_nodes.items():
-        # Cerca operazione successiva
         next_op = (job_id, op_id + 1)
         if next_op in op_nodes:
             next_op_node = op_nodes[next_op]
@@ -146,12 +189,10 @@ def build_jsp_graph(S_seq):
         op_node = op_nodes[(job_id, op_id)]
         machine_node = machine_nodes[machine]
         
-        # Bidirezionale: operazione -> macchina e macchina -> operazione
         G.add_edge(op_node, machine_node, edge_type='uses_machine')
         G.add_edge(machine_node, op_node, edge_type='used_by')
     
     return G, node_features
-
 
 def visualize_jsp_graph(G, node_features=None, figsize=(14, 10)):
     """
@@ -240,27 +281,22 @@ def visualize_jsp_graph(G, node_features=None, figsize=(14, 10)):
 
 
 def get_pytorch_geometric_data(G, node_features):
-    """
-    Converte in formato PyTorch Geometric per GCN
+    """Converte in PyG con features multi-dimensionali"""
+    from torch_geometric.data import Data
     
-    Returns:
-        Data object per PyG
-    """
-    
-    # Mappa nodi a indici
     node_to_idx = {node: idx for idx, node in enumerate(G.nodes())}
     
-    # Node features tensor
+    # Node features ora sono vettori
     x = torch.tensor([node_features[node] for node in G.nodes()], 
-                     dtype=torch.float32).unsqueeze(1)
+                     dtype=torch.float32)  # (num_nodes, 6)
     
-    # Edge index tensor
+    # Edge index
     edge_index = []
     for u, v in G.edges():
         edge_index.append([node_to_idx[u], node_to_idx[v]])
     edge_index = torch.tensor(edge_index, dtype=torch.long).t()
     
-    # Crea Data object
     data = Data(x=x, edge_index=edge_index)
-
+    data.node_ids = list(G.nodes())  # Aggiungi gli ID dei nodi
+    
     return data, node_to_idx

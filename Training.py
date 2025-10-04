@@ -8,7 +8,7 @@ import os
 # Modificare grafo #
 ####################
 
-def main(graph=False, n_jobs=6, n_machines=6, n_epochs=50, batch_size=512, resume_from_epoch=None, directory = './checkpoint_GCN_CPU/', lr = 1e-4, checkpoint_dir='./checkpoint_GCN_CPU_different_lr'):
+def main(graph=False, n_jobs=6, n_machines=6, n_epochs=255, save_every = 15, batch_size=512, resume_from_epoch=None, directory = './checkpoint_GCN_CPU/', lr = 1e-4, checkpoint_dir='./checkpoint_GCN_CPU_different_lr', GAT = False):
     device = 'cpu'  # Usa CPU come nel codice originale
     print(f"Utilizzo del dispositivo: {device}")
 
@@ -20,7 +20,10 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=50, batch_size=512, resum
     # Inizializza modello
     d_model = 128
     if graph:
-        encoder = nn.GCNEncoder(n_conv=3, d_model=d_model, n_features=4).to(device)
+        if GAT:
+            encoder = nn.GATEncoder(n_conv=3, d_model=d_model, n_features=4, n_heads = 4).to(device)
+        else:
+            encoder = nn.GCNEncoder(n_conv=3, d_model=d_model, n_features=4).to(device)
     else:
         encoder = nn.Lion17Encoder(d_model=d_model).to(device)
     decoder = nn.Lion17Decoder(d_model=d_model).to(device)
@@ -55,7 +58,7 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=50, batch_size=512, resum
         print(f"Val Gap from Optimal: {val_performance['avg_gap_from_optimal']:.2f}%")
         
         # Salva checkpoint
-        if (epoch + 1) % 5 == 0:
+        if (epoch + 1) % save_every == 0:
             torch.save({
                 'encoder': encoder.state_dict(),
                 'decoder': decoder.state_dict(),
@@ -65,17 +68,5 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=50, batch_size=512, resum
 
 if __name__ == "__main__":
     main(graph=True, resume_from_epoch=None, directory='./checkpoint_GCN_CPU_4_features/', checkpoint_dir='./checkpoint_GCN_CPU_4_features')
-    '''
-    S_seq, (n_jobs, n_machines) = gen.load_orlib_instance("jobshop1.txt", "la31")
-    print(f"Istanza ft06: {n_jobs} jobs x {n_machines} machines")
-    print(S_seq)
-    d_model = 128
-    device = 'cpu'
-
-    encoder = nn.Lion17Encoder(d_model=d_model).to(device)
-    decoder = nn.Lion17Decoder(d_model=d_model).to(device)
-    trainer = env.JSPTrainer(encoder, decoder, device)
-
-    val_performance = trainer.evaluate_model(S_seq)
-    print(f"Val Average Makespan: {val_performance['avg_makespan']:.2f}")
-    print(f"Val Gap from Optimal: {val_performance['avg_gap_from_optimal']:.2f}%")'''
+    # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GAT_CPU/', checkpoint_dir='./checkpoint_GAT_CPU')
+    # main(graph=False, resume_from_epoch=None, directory='./checkpoint_CPU/', checkpoint_dir='./checkpoint_CPU')

@@ -13,7 +13,7 @@ def load_and_evaluate_checkpoints(checkpoint_dir, graph, n_jobs=6, n_machines=6,
     
     # Inizializza modello
     if graph:
-        encoder = nn.GCNEncoder(n_conv=3, d_model=d_model, n_features=3).to(device)
+        encoder = nn.GCNEncoder(n_conv=3, d_model=d_model, n_features=4).to(device)
     else:
         encoder = nn.Lion17Encoder(d_model=d_model).to(device)
     decoder = nn.Lion17Decoder(d_model=d_model).to(device)
@@ -75,12 +75,12 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('performance_comparison_retraing.png')
+    plt.savefig('performance_comparison_long.png')
     plt.show()
 
 def main():
     device = 'cpu'  # Usa CPU come nel tuo codice originale
-    checkpoint_dir_gcn = './checkpoint_GCN_CPU_different_lr/'  # Directory per GCN (graph=True)
+    checkpoint_dir_gcn = './checkpoint_GCN_CPU_4_features/'  # Directory per GCN (graph=True)
     checkpoint_dir_lion = './checkpoint_CPU/'  # Directory per Lion17 (graph=False)
     n_jobs = 6
     n_machines = 6

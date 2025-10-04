@@ -3,10 +3,6 @@ import torch.nn as nn
 from torch_geometric.nn import GATConv, GCNConv
 import torch.nn.functional as F
 
-###########################################
-# Dovrei mettere dei batchnorm nella GCN? #
-###########################################
-
 
 class Lion17Encoder(nn.Module):
     def __init__(self, d_model = 128, n_heads = 8, n_layers = 3):
@@ -64,7 +60,6 @@ class Lion17Encoder(nn.Module):
         
         return X
     
-
 
 class Lion17Decoder(nn.Module):
     def __init__(self, d_model = 128):
@@ -239,6 +234,73 @@ class GCNEncoder(nn.Module):
             
         return x
 
+
+class GATEncoder(nn.Module):
+    def __init__(self, n_conv = 3, d_model = 128, n_features = 4, n_heads = 8):
+        super().__init__()
+        self.n_conv = n_conv
+        self.d_model = d_model
+        self.n_features = n_features
+        self.n_heads = n_heads
+
+        self.first_layer = GATConv(self.n_features, self.d_model, heads=self.n_heads, add_self_loops=True)
+
+        self.conv_layers = nn.ModuleList([GATConv(self.d_model, self.d_model, heads=self.n_heads, add_self_loops=True) for _ in range(1, self.n_conv)])
+        self.reduce = nn.ModuleList([nn.Linear(self.d_model * self.n_heads, self.d_model) for _ in range(1, self.n_conv)])
+
+        self.last_reduce = nn.Linear(self.d_model * self.n_heads, self.d_model)
+
+    def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
+
+        x = self.first_layer(x, edge_index)
+
+        for convolution, linear in zip(self.conv_layers, self.reduce):
+            x = F.relu(x)
+            x = linear(x)
+            x = convolution(x, edge_index)
+
+        x = F.relu(x)
+        x = self.last_reduce(x)
+
+        if batch_size is not None and seq_len is not None and change:
+            if operation_mask is not None:
+                # Filtra solo le feature dei nodi delle operazioni
+                x = x[operation_mask]
+            x = x.view(batch_size, seq_len, self.d_model)
+            
+        return x
+
+
+class GCNEncoderBatchNorm(nn.Module):
+    def __init__(self, n_conv = 3, d_model = 128, n_features = 4):
+        super().__init__()
+        self.n_conv = n_conv
+        self.d_model = d_model
+        self.n_features = n_features
+
+        self.first_layer = GCNConv(self.n_features, self.d_model, add_self_loops=True)
+        self.first_batchnorm = nn.BatchNorm1d(self.d_model)
+
+        self.conv_layers = nn.ModuleList([GCNConv(self.d_model, self.d_model, add_self_loops=True) for _ in range(1, self.n_conv)])
+        self.bn_layers = nn.ModuleList([nn.BatchNorm1d(self.d_model) for _ in range(1, self.n_conv)])
+
+    def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
+
+        x = self.first_layer(x, edge_index)
+        x = self.first_batchnorm(x)
+
+        for convolution, batchnorm in zip(self.conv_layers, self.bn_layers):
+            x = F.relu(x)
+            x = convolution(x, edge_index)
+            x = batchnorm(x)
+
+        if batch_size is not None and seq_len is not None and change:
+            if operation_mask is not None:
+                # Filtra solo le feature dei nodi delle operazioni
+                x = x[operation_mask]
+            x = x.view(batch_size, seq_len, self.d_model)
+            
+        return x
 # Possibile classe in futuro
 '''
 class GCNDecoder(nn.Module):

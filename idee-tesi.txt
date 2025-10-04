@@ -5,3 +5,16 @@ Nei nodi operazioni sicuramente le feature che voglio mettere sono:
 - numero dell'operazione di un determinato job
 - quante operazioni mancano dopo quella
 - tempo che ci mette a fare una certa operazione
+
+Le feature sono 4
+
+Ci sono tante possibilità da poter testare, al momento ho testato GCN, GAT. Oltre al modello del paper
+Quelle che voglio testare in futuro sono: GCN con batchnorm, GAT con batchnorm, 1 GAT + 2 GCN, 2
+GCN + 1 GAT, 1 GAT + 2 GCN con batchnorm, 2 GCN + 1 GAT con batchnorm
+
+SOPRATTUTTO devo aumentare di MOOOOLTO il numero di epoche
+Toccherà mettere i salvataggi ogni 10 epoche invece di 5, se non ogni 15
+
+Sarebbe anche figo mettere una multihead attention alla fine di ogni possibilità, come facevano nel paper.
+
+CAZZO, EFFETTIVAMENTE PER LE GAT MARCO NON USAVA LE ELU?

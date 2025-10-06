@@ -3,6 +3,21 @@ import torch.nn as nn
 from torch_geometric.nn import GATConv, GCNConv
 import torch.nn.functional as F
 
+########################
+# dropouts per la GAT? #
+########################
+
+########################################################
+# in tal caso il dropout va messo dentro la classe GAT #
+########################################################
+
+##############################
+# In caso anche diminuire lr #
+##############################
+
+#######################################
+# Forse conviene ultimo layer head = 1#
+#######################################
 
 class Lion17Encoder(nn.Module):
     def __init__(self, d_model = 128, n_heads = 8, n_layers = 3):
@@ -255,11 +270,11 @@ class GATEncoder(nn.Module):
         x = self.first_layer(x, edge_index)
 
         for convolution, linear in zip(self.conv_layers, self.reduce):
-            x = F.relu(x)
+            x = F.elu(x)
             x = linear(x)
             x = convolution(x, edge_index)
 
-        x = F.relu(x)
+        x = F.elu(x)
         x = self.last_reduce(x)
 
         if batch_size is not None and seq_len is not None and change:

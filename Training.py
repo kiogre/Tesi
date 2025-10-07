@@ -21,7 +21,7 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=255, save_every = 15, bat
     d_model = 128
     if graph:
         if GAT:
-            encoder = nn.GATEncoder(n_conv=3, d_model=d_model, n_features=4, n_heads = 4).to(device)
+            encoder = nn.GATGCNEncoder(n_gcn_conv=2, d_model=d_model, n_features=4, n_heads = 4).to(device)
         else:
             encoder = nn.GCNEncoder(n_conv=3, d_model=d_model, n_features=4).to(device)
     else:
@@ -67,6 +67,9 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=255, save_every = 15, bat
 
 
 if __name__ == "__main__":
-    main(graph=True, resume_from_epoch=None, directory='./checkpoint_GCN_CPU_4_features/', checkpoint_dir='./checkpoint_GCN_CPU_4_features')
-    # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GAT_CPU/', checkpoint_dir='./checkpoint_GAT_CPU')
+    # main(graph=True, resume_from_epoch=None, directory='./checkpoint_GCN_CPU_4_features/', checkpoint_dir='./checkpoint_GCN_CPU_4_features')
+    main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_5e-6/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_5e-6', lr = 5e-6)
+    main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-6/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-6', lr = 1e-6)
+    main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-5/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-5', lr = 1e-5)
+    main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_8e-6/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_8e-6', lr = 8e-6)
     # main(graph=False, resume_from_epoch=None, directory='./checkpoint_CPU/', checkpoint_dir='./checkpoint_CPU')

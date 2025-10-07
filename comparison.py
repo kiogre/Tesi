@@ -13,7 +13,7 @@ def load_and_evaluate_checkpoints(checkpoint_dir, graph, n_jobs=6, n_machines=6,
     
     # Inizializza modello
     if graph:
-        encoder = nn.GCNEncoder(n_conv=3, d_model=d_model, n_features=4).to(device)
+        encoder = nn.GATGCNEncoder(n_gcn_conv=2, d_model=d_model, n_features=4, n_heads = 4).to(device)
     else:
         encoder = nn.Lion17Encoder(d_model=d_model).to(device)
     decoder = nn.Lion17Decoder(d_model=d_model).to(device)
@@ -56,8 +56,8 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     
     # Plot Validation Makespan
     plt.subplot(1, 2, 1)
-    plt.plot(gcn_epochs, gcn_makespans, label='GCN (graph=True)', color='blue', marker='o')
-    plt.plot(lion_epochs, lion_makespans, label='Lion17 (graph=False)', color='orange', marker='o')
+    plt.plot(gcn_epochs, gcn_makespans, label='GAT1e-5 (graph=True)', color='blue', marker='o')
+    plt.plot(lion_epochs, lion_makespans, label='GAT8e-6 (graph=False)', color='orange', marker='o')
     plt.xlabel('Epoca')
     plt.ylabel('Makespan Medio')
     plt.title('Confronto Makespan di Validazione')
@@ -66,8 +66,8 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     
     # Plot Validation Gap
     plt.subplot(1, 2, 2)
-    plt.plot(gcn_epochs, gcn_gaps, label='GCN (graph=True)', color='blue', marker='o')
-    plt.plot(lion_epochs, lion_gaps, label='Lion17 (graph=False)', color='orange', marker='o')
+    plt.plot(gcn_epochs, gcn_gaps, label='GAT1e-5 (graph=True)', color='blue', marker='o')
+    plt.plot(lion_epochs, lion_gaps, label='GAT8e-6 (graph=False)', color='orange', marker='o')
     plt.xlabel('Epoca')
     plt.ylabel('Gap % da Ottimale')
     plt.title('Confronto Gap da Ottimale')
@@ -75,13 +75,13 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('performance_comparison_long.png')
+    plt.savefig('performance_comparison_long_GATGCN_big.png')
     plt.show()
 
 def main():
     device = 'cpu'  # Usa CPU come nel tuo codice originale
-    checkpoint_dir_gcn = './checkpoint_GCN_CPU_4_features/'  # Directory per GCN (graph=True)
-    checkpoint_dir_lion = './checkpoint_CPU/'  # Directory per Lion17 (graph=False)
+    checkpoint_dir_gcn = './checkpoint_GATGCN_CPU_gelu_1e-5/'  # Directory per GCN (graph=True)
+    checkpoint_dir_lion = './checkpoint_GATGCN_CPU_gelu_8e-6/'  # Directory per Lion17 (graph=False)
     n_jobs = 6
     n_machines = 6
     d_model = 128
@@ -90,14 +90,14 @@ def main():
     print(f"Utilizzo del dispositivo: {device}")
     
     # Carica e valuta i checkpoint per GCNEncoder (graph=True)
-    print("Valutazione checkpoint per GCNEncoder (graph=True)...")
+    print("Valutazione checkpoint per GATEncoder (graph=True)...")
     gcn_metrics = load_and_evaluate_checkpoints(checkpoint_dir_gcn, graph=True, 
                                                n_jobs=n_jobs, n_machines=n_machines, 
                                                d_model=d_model, device=device, n_samples=n_samples)
     
     # Carica e valuta i checkpoint per Lion17Encoder (graph=False)
     print("\nValutazione checkpoint per Lion17Encoder (graph=False)...")
-    lion_metrics = load_and_evaluate_checkpoints(checkpoint_dir_lion, graph=False, 
+    lion_metrics = load_and_evaluate_checkpoints(checkpoint_dir_lion, graph=True, 
                                                 n_jobs=n_jobs, n_machines=n_machines, 
                                                 d_model=d_model, device=device, n_samples=n_samples)
     
@@ -112,7 +112,7 @@ def main():
         print(f"  Ultimo Makespan Medio: {gcn_metrics[1][-1]:.2f}")
         print(f"  Ultimo Gap da Ottimale: {gcn_metrics[2][-1]:.2f}%")
     else:
-        print("Nessun checkpoint trovato per GCNEncoder (graph=True)")
+        print("Nessun checkpoint trovato per GATEncoder (graph=True)")
     if lion_metrics[0]:
         print(f"Lion17Encoder (graph=False) all'epoca {lion_metrics[0][-1]}:")
         print(f"  Ultimo Makespan Medio: {lion_metrics[1][-1]:.2f}")

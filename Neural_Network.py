@@ -270,11 +270,11 @@ class GATEncoder(nn.Module):
         x = self.first_layer(x, edge_index)
 
         for convolution, linear in zip(self.conv_layers, self.reduce):
-            x = F.elu(x)
+            x = F.gelu(x)
             x = linear(x)
             x = convolution(x, edge_index)
 
-        x = F.elu(x)
+        x = F.gelu(x)
         x = self.last_reduce(x)
 
         if batch_size is not None and seq_len is not None and change:
@@ -321,6 +321,10 @@ class GCNEncoderBatchNorm(nn.Module):
 class GATGCNEncoder(nn.Module):
     def __init__(self, n_gcn_conv = 2, d_model = 128, n_features = 4, n_heads = 8):
         super().__init__()
+        self.d_model = d_model
+        self.n_gcn_conv = n_gcn_conv
+        self.n_features = n_features
+        self.n_heads = n_heads
         self.GAT_conv = GATConv(n_features, d_model, heads=n_heads, add_self_loops=True)
         self.first_GCN_conv = GCNConv(d_model * n_heads, d_model, add_self_loops=True)
 
@@ -329,11 +333,11 @@ class GATGCNEncoder(nn.Module):
     def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
 
         x = self.GAT_conv(x, edge_index)
-        x = F.relu(x)
+        x = F.gelu(x)
         x = self.first_GCN_conv(x, edge_index)
 
         for convolution in self.GCN_layers:
-            x = F.relu(x)
+            x = F.gelu(x)
             x = convolution(x, edge_index)
 
         if batch_size is not None and seq_len is not None and change:

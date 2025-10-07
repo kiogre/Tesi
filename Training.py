@@ -14,8 +14,8 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=255, save_every = 15, bat
 
     # Genera dataset
     print("Generazione dataset...")
-    train_dataset = gen.generate_dataset(10000, n_jobs, n_machines, return_graphs=graph)
-    val_dataset = gen.generate_dataset(1000, n_jobs, n_machines, return_graphs=graph)
+    train_dataset = gen.generate_dataset(20000, n_jobs, n_machines, return_graphs=graph)
+    val_dataset = gen.generate_dataset(2000, n_jobs, n_machines, return_graphs=graph)
     
     # Inizializza modello
     d_model = 128

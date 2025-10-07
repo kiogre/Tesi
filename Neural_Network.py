@@ -328,7 +328,7 @@ class GATGCNEncoder(nn.Module):
         self.GAT_conv = GATConv(n_features, d_model, heads=n_heads, add_self_loops=True)
         self.first_GCN_conv = GCNConv(d_model * n_heads, d_model, add_self_loops=True)
 
-        self.GCN_layers = nn.ModuleList([GCNConv(d_model, d_model, add_self_loops=True) for _ in range(2, n_gcn_conv)])
+        self.GCN_layers = nn.ModuleList([GCNConv(d_model, d_model, add_self_loops=True) for _ in range(1, n_gcn_conv)])
 
     def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
 

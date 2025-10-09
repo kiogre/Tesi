@@ -75,13 +75,13 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('performance_comparison_long_GATGCN_big.png')
+    plt.savefig('performance_comparison_long_GATGCN_small.png')
     plt.show()
 
 def main():
     device = 'cpu'  # Usa CPU come nel tuo codice originale
-    checkpoint_dir_gcn = './checkpoint_GATGCN_CPU_gelu_1e-5/'  # Directory per GCN (graph=True)
-    checkpoint_dir_lion = './checkpoint_GATGCN_CPU_gelu_8e-6/'  # Directory per Lion17 (graph=False)
+    checkpoint_dir_gcn = './checkpoint_GATGCN_CPU_gelu_5e-6/'  # Directory per GCN (graph=True)
+    checkpoint_dir_lion = './checkpoint_GATGCN_CPU_gelu_1e-6/'  # Directory per Lion17 (graph=False)
     n_jobs = 6
     n_machines = 6
     d_model = 128

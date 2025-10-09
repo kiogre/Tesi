@@ -14,8 +14,8 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=255, save_every = 15, bat
 
     # Genera dataset
     print("Generazione dataset...")
-    train_dataset = gen.generate_dataset(20000, n_jobs, n_machines, return_graphs=graph)
-    val_dataset = gen.generate_dataset(2000, n_jobs, n_machines, return_graphs=graph)
+    train_dataset = gen.generate_dataset(10000, n_jobs, n_machines, return_graphs=graph)
+    val_dataset = gen.generate_dataset(1000, n_jobs, n_machines, return_graphs=graph)
     
     # Inizializza modello
     d_model = 128
@@ -69,7 +69,6 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=255, save_every = 15, bat
 if __name__ == "__main__":
     # main(graph=True, resume_from_epoch=None, directory='./checkpoint_GCN_CPU_4_features/', checkpoint_dir='./checkpoint_GCN_CPU_4_features')
     main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_5e-6/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_5e-6', lr = 5e-6)
-    main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-6/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-6', lr = 1e-6)
     main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-5/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-5', lr = 1e-5)
     main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_8e-6/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_8e-6', lr = 8e-6)
     # main(graph=False, resume_from_epoch=None, directory='./checkpoint_CPU/', checkpoint_dir='./checkpoint_CPU')

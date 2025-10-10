@@ -365,7 +365,7 @@ class GCNEncoderDropout(nn.Module):
         x = self.first_layer(x, edge_index)
 
         for convolution in self.conv_layers:
-            nn.Dropout(p=0.2)
+            x = nn.Dropout(p=0.2)(x)
             x = F.relu(x)
             x = convolution(x, edge_index)
 
@@ -392,13 +392,12 @@ class GATGCNEncoderDropout(nn.Module):
 
     def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
 
-        x = self.GAT_conv(x, edge_index)
-        nn.Dropout(p=0.2)
+        x = self.GAT_conv(x, edge_index, dropout = 0.2)
         x = F.gelu(x)
         x = self.first_GCN_conv(x, edge_index)
 
         for convolution in self.GCN_layers:
-            nn.Dropout(p=0.2)
+            x = nn.Dropout(p=0.2)(0.2)
             x = F.gelu(x)
             x = convolution(x, edge_index)
 

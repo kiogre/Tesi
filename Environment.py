@@ -1,6 +1,5 @@
 import torch
 from torch import optim
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from tqdm import tqdm
@@ -22,7 +21,6 @@ class JSPTrainer:
             list(encoder.parameters()) + list(decoder.parameters()), 
             lr=lr
         )
-        self.scheduler = ReduceLROnPlateau(self.optimizer, mode='min', factor=0.5, patience=5, threshold=0.01, min_lr=1e-6, verbose=True)
         self.baseline = None
         self.device = device
         self.graph = graph
@@ -87,7 +85,7 @@ class JSPTrainer:
                 list(self.encoder.parameters()) + list(self.decoder.parameters()),
                 0.5
             )
-            self.scheduler.step()
+            self.optimizer.step()
 
             total_loss += loss.item()
 

@@ -347,3 +347,65 @@ class GATGCNEncoder(nn.Module):
             x = x.view(batch_size, seq_len, self.d_model)
             
         return x
+    
+
+class GCNEncoderDropout(nn.Module):
+    def __init__(self, n_conv = 3, d_model = 128, n_features = 4):
+        super().__init__()
+        self.n_conv = n_conv
+        self.d_model = d_model
+        self.n_features = n_features
+
+        self.first_layer = GCNConv(self.n_features, self.d_model, add_self_loops=True)
+
+        self.conv_layers = nn.ModuleList([GCNConv(self.d_model, self.d_model, add_self_loops=True) for _ in range(1, self.n_conv)])
+
+    def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
+
+        x = self.first_layer(x, edge_index)
+
+        for convolution in self.conv_layers:
+            nn.Dropout(p=0.2)
+            x = F.relu(x)
+            x = convolution(x, edge_index)
+
+        if batch_size is not None and seq_len is not None and change:
+            if operation_mask is not None:
+                # Filtra solo le feature dei nodi delle operazioni
+                x = x[operation_mask]
+            x = x.view(batch_size, seq_len, self.d_model)
+            
+        return x
+    
+
+class GATGCNEncoderDropout(nn.Module):
+    def __init__(self, n_gcn_conv = 2, d_model = 128, n_features = 4, n_heads = 8):
+        super().__init__()
+        self.d_model = d_model
+        self.n_gcn_conv = n_gcn_conv
+        self.n_features = n_features
+        self.n_heads = n_heads
+        self.GAT_conv = GATConv(n_features, d_model, heads=n_heads, add_self_loops=True)
+        self.first_GCN_conv = GCNConv(d_model * n_heads, d_model, add_self_loops=True)
+
+        self.GCN_layers = nn.ModuleList([GCNConv(d_model, d_model, add_self_loops=True) for _ in range(1, n_gcn_conv)])
+
+    def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
+
+        x = self.GAT_conv(x, edge_index)
+        nn.Dropout(p=0.2)
+        x = F.gelu(x)
+        x = self.first_GCN_conv(x, edge_index)
+
+        for convolution in self.GCN_layers:
+            nn.Dropout(p=0.2)
+            x = F.gelu(x)
+            x = convolution(x, edge_index)
+
+        if batch_size is not None and seq_len is not None and change:
+            if operation_mask is not None:
+                # Filtra solo le feature dei nodi delle operazioni
+                x = x[operation_mask]
+            x = x.view(batch_size, seq_len, self.d_model)
+            
+        return x

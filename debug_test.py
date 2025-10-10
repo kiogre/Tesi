@@ -110,7 +110,7 @@ def run_all_tests():
 
     encoder = nn.Lion17Encoder(d_model=d_model)
     decoder = nn.Lion17Decoder(d_model=d_model)
-    trainer = JSPTrainer(encoder, decoder) # encoder/decoder non usati qui, serve l'istanza
+    trainer = JSPTrainer(encoder, decoder, device="cpu") # encoder/decoder non usati qui, serve l'istanza
     print("ATTENZIONE: JSPTrainer richiede encoder/decoder, li impostiamo a None ma abbiamo bisogno solo del metodo OR-Tools.\n")
 
     tests = []
@@ -196,8 +196,9 @@ def run_all_tests():
 if __name__ == "__main__":
     # Genera istanza JSP
     
-    # run_all_test()
+    run_all_tests()
 
+    """
     dataset = gen.generate_dataset(1, 3, 3)  # 1 istanza 3x3
     S_seq = dataset[0]
     print(S_seq)
@@ -216,4 +217,4 @@ if __name__ == "__main__":
     data, node_mapping = gen.get_pytorch_geometric_data(G, node_features)
     print(f"\nPyG Data:")
     print(f"  x shape: {data.x.shape}")
-    print(f"  edge_index shape: {data.edge_index.shape}")
+    print(f"  edge_index shape: {data.edge_index.shape}")"""

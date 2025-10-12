@@ -3,6 +3,7 @@ from torch import optim
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from tqdm import tqdm
+from torch_geometric.data import Batch
 
 #################################
 # Modificare calculate makespan #
@@ -33,64 +34,42 @@ class JSPTrainer:
             batch = dataset[i*batch_size:(i+1)*batch_size]
 
             if self.graph:
-                # Extract instance_tensor and pyg_data from the tuple
-                batch_tensors = [item[0] for item in batch]  # List of instance tensors
-                batch_pyg_data = [item[1] for item in batch]  # List of PyG Data objects
-
-                # Move the PyG Data objects to the device
-                batch_pyg_data = [data.to(self.device) for data in batch_pyg_data]
-
-                # For simplicity, process one item at a time (no batching for PyG yet)
-                data = batch_pyg_data[0]  # Take the first Data object
-                batch_tensor = batch_tensors[0].to(self.device).unsqueeze(0)  # Aggiungi dimensione batch
-
-                x = data.x.float()
-                edge_index = data.edge_index.long()
-
-                # Crea un maschera per i nodi delle operazioni basata su data.x
-                operation_mask = data.x[:, 0] != -1  # Nodi con x[:, 0] != -1 sono operazioni
-
-                encoder_outputs = self.encoder(x, edge_index, batch_size=1, seq_len=batch_tensor.size(1), 
+                batch_tensors = [item[0] for item in batch]
+                batch_pyg_data = [item[1].to(self.device) for item in batch]
+                from torch_geometric.data import Batch
+                pyg_batch = Batch.from_data_list(batch_pyg_data)
+                x = pyg_batch.x.float()
+                edge_index = pyg_batch.edge_index.long()
+                batch_size = len(batch)
+                seq_len = batch_tensors[0].size(0)
+                operation_mask = pyg_batch.x[:, 0] != -1
+                encoder_outputs = self.encoder(x, edge_index, batch_size=batch_size, seq_len=seq_len, 
                                             change=True, operation_mask=operation_mask)
-
+                instance_batch = torch.stack(batch_tensors).to(self.device)
             else:
-                batch_tensor = torch.stack([inst.detach().clone() for inst in batch]).to(self.device)
-                encoder_outputs = self.encoder(batch_tensor)
+                instance_batch = torch.stack([inst.detach().clone() for inst in batch]).to(self.device)
+                encoder_outputs = self.encoder(instance_batch)
 
-            # Forward decoder
-            sequences, log_probs = self.decoder(encoder_outputs, batch_tensor)
-
-            # Calculate rewards (negative makespan)
-            rewards = []
-            for b in range(batch_tensor.size(0)):  # Usa batch_tensor.size(0) invece di len(batch)
-                makespan = self.calculate_makespan_from_sequence(sequences[b], batch_tensor[b])
-                rewards.append(-makespan)
-
+            sequences, log_probs = self.decoder(encoder_outputs, instance_batch)
+            rewards = [(-self.calculate_makespan_from_sequence(sequences[b], instance_batch[b])) for b in range(batch_size)]
             rewards = torch.tensor(rewards, dtype=torch.float32, device=self.device)
 
-            # Baseline (moving average)
             if self.baseline is None:
                 self.baseline = rewards.mean()
             else:
                 self.baseline = 0.9 * self.baseline + 0.1 * rewards.mean()
 
-            # REINFORCE loss
             advantage = rewards - self.baseline
             loss = -(log_probs.sum(dim=1) * advantage).mean()
 
-            # Backward pass
             self.optimizer.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(
-                list(self.encoder.parameters()) + list(self.decoder.parameters()),
-                0.5
-            )
+            torch.nn.utils.clip_grad_norm_(list(self.encoder.parameters()) + list(self.decoder.parameters()), 0.5)
             self.optimizer.step()
 
             total_loss += loss.item()
 
         return total_loss / num_batches
-
 
     def indices_to_schedule(output_indices, S_seq):
         """Converte indici in scheduling effettivo"""

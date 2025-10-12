@@ -1,0 +1,7 @@
+torch==2.8.0+cu128
+torch_geometric==2.6.1
+tqdm==4.67.1
+matplotlib==3.10.6
+matplotlib-inline==0.1.7
+ortools==9.14.6206
+networkx==3.3

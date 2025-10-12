@@ -6,14 +6,17 @@ import matplotlib.pyplot as plt
 import os
 from tqdm import tqdm
 
-def load_and_evaluate_checkpoints(checkpoint_dir, graph, n_jobs=6, n_machines=6, d_model=128, device='cpu', n_samples=100):
+def load_and_evaluate_checkpoints(checkpoint_dir, graph, n_jobs=6, n_machines=6, d_model=128, device='cpu', n_samples=100, GAT = False):
     # Genera dataset di validazione
     print(f"Generazione dataset di validazione per graph={graph}...")
     val_dataset = gen.generate_dataset(1000, n_jobs, n_machines, return_graphs=graph)
     
     # Inizializza modello
     if graph:
-        encoder = nn.GATGCNEncoder(n_gcn_conv=2, d_model=d_model, n_features=4, n_heads = 4).to(device)
+        if GAT:
+            encoder = nn.GATGCNEncoderDropout(n_gcn_conv=2, d_model=d_model, n_features=4, n_heads = 4).to(device)
+        else:
+            encoder = nn.GCNEncoderDropout(n_conv=3, d_model=d_model, n_features=4).to(device)
     else:
         encoder = nn.Lion17Encoder(d_model=d_model).to(device)
     decoder = nn.Lion17Decoder(d_model=d_model).to(device)
@@ -56,8 +59,8 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     
     # Plot Validation Makespan
     plt.subplot(1, 2, 1)
-    plt.plot(gcn_epochs, gcn_makespans, label='GAT1e-5 (graph=True)', color='blue', marker='o')
-    plt.plot(lion_epochs, lion_makespans, label='GAT8e-6 (graph=False)', color='orange', marker='o')
+    plt.plot(gcn_epochs, gcn_makespans, label='GCNDropout (graph=True)', color='blue', marker='o')
+    plt.plot(lion_epochs, lion_makespans, label='LION17 (graph=False)', color='orange', marker='o')
     plt.xlabel('Epoca')
     plt.ylabel('Makespan Medio')
     plt.title('Confronto Makespan di Validazione')
@@ -66,8 +69,8 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     
     # Plot Validation Gap
     plt.subplot(1, 2, 2)
-    plt.plot(gcn_epochs, gcn_gaps, label='GAT1e-5 (graph=True)', color='blue', marker='o')
-    plt.plot(lion_epochs, lion_gaps, label='GAT8e-6 (graph=False)', color='orange', marker='o')
+    plt.plot(gcn_epochs, gcn_gaps, label='GCNDropout (graph=True)', color='blue', marker='o')
+    plt.plot(lion_epochs, lion_gaps, label='LION17 (graph=False)', color='orange', marker='o')
     plt.xlabel('Epoca')
     plt.ylabel('Gap % da Ottimale')
     plt.title('Confronto Gap da Ottimale')
@@ -75,13 +78,13 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('performance_comparison_long_GATGCN_small.png')
+    plt.savefig('performance_comparison_GCN_LION_Definitivo.png')
     plt.show()
 
 def main():
     device = 'cpu'  # Usa CPU come nel tuo codice originale
-    checkpoint_dir_gcn = './checkpoint_GATGCN_CPU_gelu_5e-6/'  # Directory per GCN (graph=True)
-    checkpoint_dir_lion = './checkpoint_GATGCN_CPU_gelu_1e-6/'  # Directory per Lion17 (graph=False)
+    checkpoint_dir_gcn = './checkpoint_GCN_CPU_4_features/'  # Directory per GCN (graph=True)
+    checkpoint_dir_lion = './checkpoint_CPU/'  # Directory per Lion17 (graph=False)
     n_jobs = 6
     n_machines = 6
     d_model = 128
@@ -93,13 +96,13 @@ def main():
     print("Valutazione checkpoint per GATEncoder (graph=True)...")
     gcn_metrics = load_and_evaluate_checkpoints(checkpoint_dir_gcn, graph=True, 
                                                n_jobs=n_jobs, n_machines=n_machines, 
-                                               d_model=d_model, device=device, n_samples=n_samples)
+                                               d_model=d_model, device=device, n_samples=n_samples, GAT = False)
     
     # Carica e valuta i checkpoint per Lion17Encoder (graph=False)
     print("\nValutazione checkpoint per Lion17Encoder (graph=False)...")
-    lion_metrics = load_and_evaluate_checkpoints(checkpoint_dir_lion, graph=True, 
+    lion_metrics = load_and_evaluate_checkpoints(checkpoint_dir_lion, graph=False, 
                                                 n_jobs=n_jobs, n_machines=n_machines, 
-                                                d_model=d_model, device=device, n_samples=n_samples)
+                                                d_model=d_model, device=device, n_samples=n_samples, GAT = False)
     
     # Visualizza il confronto
     print("\nVisualizzazione del confronto delle performance...")

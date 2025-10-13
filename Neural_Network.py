@@ -294,7 +294,6 @@ class GCNEncoderBatchNorm(nn.Module):
         self.n_features = n_features
 
         self.first_layer = GCNConv(self.n_features, self.d_model, add_self_loops=True)
-        self.first_batchnorm = nn.BatchNorm1d(self.d_model)
 
         self.conv_layers = nn.ModuleList([GCNConv(self.d_model, self.d_model, add_self_loops=True) for _ in range(1, self.n_conv)])
         self.bn_layers = nn.ModuleList([nn.BatchNorm1d(self.d_model) for _ in range(1, self.n_conv)])
@@ -302,12 +301,11 @@ class GCNEncoderBatchNorm(nn.Module):
     def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
 
         x = self.first_layer(x, edge_index)
-        x = self.first_batchnorm(x)
 
         for convolution, batchnorm in zip(self.conv_layers, self.bn_layers):
+            x = batchnorm(x)
             x = F.relu(x)
             x = convolution(x, edge_index)
-            x = batchnorm(x)
 
         if batch_size is not None and seq_len is not None and change:
             if operation_mask is not None:
@@ -400,6 +398,36 @@ class GATGCNEncoderDropout(nn.Module):
         for convolution in self.GCN_layers:
             x = nn.Dropout(p=0.05)(x)
             x = F.gelu(x)
+            x = convolution(x, edge_index)
+
+        if batch_size is not None and seq_len is not None and change:
+            if operation_mask is not None:
+                # Filtra solo le feature dei nodi delle operazioni
+                x = x[operation_mask]
+            x = x.view(batch_size, seq_len, self.d_model)
+            
+        return x
+    
+
+class GCNEncoderBatchNorm(nn.Module):
+    def __init__(self, n_conv = 3, d_model = 128, n_features = 4):
+        super().__init__()
+        self.n_conv = n_conv
+        self.d_model = d_model
+        self.n_features = n_features
+
+        self.first_layer = GCNConv(self.n_features, self.d_model, add_self_loops=True)
+
+        self.conv_layers = nn.ModuleList([GCNConv(self.d_model, self.d_model, add_self_loops=True) for _ in range(1, self.n_conv)])
+        self.bn_layers = nn.ModuleList([nn.LayerNorm(self.d_model) for _ in range(1, self.n_conv)])
+
+    def forward(self, x, edge_index, batch_size = None, seq_len = None, change = False, operation_mask=None):
+
+        x = self.first_layer(x, edge_index)
+
+        for convolution, layernorm in zip(self.conv_layers, self.bn_layers):
+            x = layernorm(x)
+            x = F.relu(x)
             x = convolution(x, edge_index)
 
         if batch_size is not None and seq_len is not None and change:

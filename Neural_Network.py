@@ -409,7 +409,7 @@ class GATGCNEncoderDropout(nn.Module):
         return x
     
 
-class GCNEncoderBatchNorm(nn.Module):
+class GCNEncoderLayerNorm(nn.Module):
     def __init__(self, n_conv = 3, d_model = 128, n_features = 4):
         super().__init__()
         self.n_conv = n_conv

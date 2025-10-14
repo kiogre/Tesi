@@ -16,34 +16,17 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=150, save_every = 10, bat
     # Genera dataset
     print("Generazione dataset misto...")
 
-    # Mescola diverse dimensioni
-    datasets_train = []
-    datasets_val = []
+    train_dataset = gen.generate_dataset(10000, n_jobs, n_machines, return_graphs=graph)
+    val_dataset = gen.generate_dataset(1000, n_jobs, n_machines, return_graphs=graph)
 
-    mix_configs = [
-        (6, 6, 5000),   # (n_jobs, n_machines, n_istanze)
-        (8, 6, 3000),
-        (10, 5, 2000)
-    ]
-
-    for (nj, nm, nsize) in mix_configs:
-        datasets_train += gen.generate_dataset(nsize, nj, nm, return_graphs=graph)
-        datasets_val   += gen.generate_dataset(int(nsize * 0.1), nj, nm, return_graphs=graph)
-
-    # Shuffle globale per mischiare tutte le dimensioni
-    random.shuffle(datasets_train)
-    random.shuffle(datasets_val)
-
-    train_dataset = datasets_train
-    val_dataset = datasets_val
     
     # Inizializza modello
     d_model = 128
     if graph:
         if GAT:
-            encoder = nn.GATGCNEncoderDropout(n_gcn_conv=2, d_model=d_model, n_features=4, n_heads = 4).to(device)
+            encoder = nn.GATGCNEncoder(n_gcn_conv=2, d_model=d_model, n_features=4, n_heads = 4).to(device)
         else:
-            encoder = nn.GCNEncoderBatchNorm(n_conv=3, d_model=d_model, n_features=4).to(device)
+            encoder = nn.GCNEncoderLayerNorm(n_conv=3, d_model=d_model, n_features=4).to(device)
     else:
         encoder = nn.Lion17Encoder(d_model=d_model).to(device)
     decoder = nn.Lion17Decoder(d_model=d_model).to(device)
@@ -87,10 +70,10 @@ def main(graph=False, n_jobs=6, n_machines=6, n_epochs=150, save_every = 10, bat
 
 
 if __name__ == "__main__":
-    # main(graph=True, resume_from_epoch=None, directory='./checkpoint_GCN_CPU_4_features/', checkpoint_dir='./checkpoint_GCN_CPU_4_features')
-    # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-5/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-5', lr = 1e-5)
-    # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-6/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-6', lr = 1e-6)
-    # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_5e-6/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_5e-6', lr = 5e-6)
-    # main(graph=False, resume_from_epoch=None, directory='./checkpoint_CPU/', checkpoint_dir='./checkpoint_CPU')
-    main(graph = True, resume_from_epoch=None, directory="./checkpoint_GCN_BatchNorm/", checkpoint_dir="./checkpoint_GCN_BatchNorm", GAT = False)
+    # main(graph=True, resume_from_epoch=None, directory='./checkpoint_GCN_CPU_4_features_Misto/', checkpoint_dir='./checkpoint_GCN_CPU_4_features_Misto')
+    # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-5_Misto/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-5_Misto', lr = 1e-5)
+    # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-6_Misto/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-6_Misto', lr = 1e-6)
+    # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_5e-6_Misto/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_5e-6_Misto', lr = 5e-6)
+    # main(graph=False, resume_from_epoch=None, directory='./checkpoint_CPU_Misto/', checkpoint_dir='./checkpoint_CPU_Misto')
+    main(graph = True, resume_from_epoch=None, directory="./checkpoint_GCN_LayerNorm/", checkpoint_dir="./checkpoint_GCN_LayerNorm", GAT = False)
     # main(graph=True, GAT = True, resume_from_epoch=None, directory='./checkpoint_GATGCN_CPU_gelu_1e-5_Dropout/', checkpoint_dir='./checkpoint_GATGCN_CPU_gelu_1e-5_Dropout', lr = 1e-5)

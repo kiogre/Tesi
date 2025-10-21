@@ -16,7 +16,7 @@ def load_and_evaluate_checkpoints(checkpoint_dir, graph, n_jobs=6, n_machines=6,
         if GAT:
             encoder = nn.GATGCNEncoderDropout(n_gcn_conv=2, d_model=d_model, n_features=4, n_heads = 4).to(device)
         else:
-            encoder = nn.GCNEncoderDropout(n_conv=3, d_model=d_model, n_features=4).to(device)
+            encoder = nn.GCNEncoderLayerNorm(n_conv=3, d_model=d_model, n_features=4).to(device)
     else:
         encoder = nn.Lion17Encoder(d_model=d_model).to(device)
     decoder = nn.Lion17Decoder(d_model=d_model).to(device)
@@ -69,7 +69,7 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     
     # Plot Validation Gap
     plt.subplot(1, 2, 2)
-    plt.plot(gcn_epochs, gcn_gaps, label='GCNDropout (graph=True)', color='blue', marker='o')
+    plt.plot(gcn_epochs, gcn_gaps, label='GCNLayerNorm (graph=True)', color='blue', marker='o')
     plt.plot(lion_epochs, lion_gaps, label='LION17 (graph=False)', color='orange', marker='o')
     plt.xlabel('Epoca')
     plt.ylabel('Gap % da Ottimale')
@@ -78,15 +78,15 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('performance_comparison_GCN_LION_Definitivo.png')
+    plt.savefig('performance_comparison_LION_LayerNorm_30x20.png')
     plt.show()
 
 def main():
     device = 'cpu'  # Usa CPU come nel tuo codice originale
-    checkpoint_dir_gcn = './checkpoint_GCN_CPU_4_features/'  # Directory per GCN (graph=True)
+    checkpoint_dir_gcn = './checkpoint_GCN_LayerNorm/'  # Directory per GCN (graph=True)
     checkpoint_dir_lion = './checkpoint_CPU/'  # Directory per Lion17 (graph=False)
-    n_jobs = 6
-    n_machines = 6
+    n_jobs = 30
+    n_machines = 20
     d_model = 128
     n_samples = 100  # Numero di istanze per la valutazione
     

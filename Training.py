@@ -4,6 +4,8 @@ import Generate as gen
 import torch
 import os
 import random
+import matplotlib
+matplotlib.use('TkAgg')
 
 ####################
 # Modificare grafo #

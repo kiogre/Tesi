@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from tqdm import tqdm
 from torch_geometric.data import Batch
+import matplotlib
+matplotlib.use('TkAgg')
 
 #################################
 # Modificare calculate makespan #
@@ -125,39 +127,37 @@ class JSPTrainer:
         
         with torch.no_grad():
             for i, instance in enumerate(test_dataset[:n_samples]):
+                # >>>>> INIZIO MISURAZIONE TEMPO TOTALE RETE NEURALE <<<<<
+                import time
+                start_time = time.time()
+                # >>>>> INFERENZA <<<<<
                 if self.graph:
-                    # instance è una tupla (instance_tensor, pyg_data)
                     instance_tensor, pyg_data = instance
                     instance_tensor = instance_tensor.to(self.device)
                     pyg_data = pyg_data.to(self.device)
                     
-                    # Estrai feature e edge_index
                     x = pyg_data.x.float()
                     edge_index = pyg_data.edge_index.long()
+                    operation_mask = pyg_data.x[:, 0] != -1
                     
-                    # Crea una maschera per i nodi delle operazioni
-                    operation_mask = pyg_data.x[:, 0] != -1  # Nodi con x[:, 0] != -1 sono operazioni
-                    
-                    # Passa al GCNEncoder
                     encoder_outputs = self.encoder(x, edge_index, batch_size=1, seq_len=instance_tensor.size(0), 
                                                 change=True, operation_mask=operation_mask)
-                    
-                    # Aggiungi dimensione batch per il decoder
-                    instance_batch = instance_tensor.unsqueeze(0)  # [1, seq_len, 4]
+                    instance_batch = instance_tensor.unsqueeze(0)
                 else:
                     instance_batch = instance.unsqueeze(0).to(self.device)
                     encoder_outputs = self.encoder(instance_batch)
                 
-                # Forward decoder
                 sequences, _ = self.decoder(encoder_outputs, instance_batch, training=False)
+                # >>>>> FINE INFERENZA <<<<<
+                elapsed = time.time() - start_time
+                print(f"[Tempo rete neurale (encoder+decoder)]: {elapsed:.4f} secondi")
+                # >>>>> FINE MISURAZIONE <<<<<
                 
-                # Calcola makespan
                 makespan = self.calculate_makespan_from_sequence(
                     sequences[0], instance_batch[0]
                 )
                 total_makespan += makespan
                 
-                # Confronta con soluzione ottimale (se disponibile)
                 instance_for_optimal = instance_tensor if self.graph else instance
                 optimal_makespan = self.solve_optimal_jsp(instance_for_optimal)
                 if optimal_makespan > 0:
@@ -289,7 +289,7 @@ class JSPTrainer:
             duration = task['end'] - task['start']
             
             rect = patches.Rectangle((start, machine), duration, 0.8,
-                                facecolor=colors[job_id % len(colors)],
+                                facecolor=colors[int(job_id) % len(colors)],
                                 alpha=0.7)
             ax.add_patch(rect)
             

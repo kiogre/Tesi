@@ -1,0 +1,21 @@
+\documentclass[preview, border=0pt]{standalone}
+% La classe 'standalone' con 'border=0pt' è essenziale per eliminare i margini.
+
+% Carica PGFPlots per i grafici
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18} % Imposta la versione di compatibilità
+\usepackage{amsmath}     % Utile per formule matematiche nelle etichette
+
+\begin{document}
+\begin{figure}
+\[
+\begin{bmatrix}
+    1 & 1 & 1 & 2 \\
+    1 & 2 & 2 & 1 \\
+    2 & 1 & 1 & 3 \\
+    2 & 2 & 2 & 4 \\
+\end{bmatrix}
+\]
+\end{figure}
+
+\end{document}

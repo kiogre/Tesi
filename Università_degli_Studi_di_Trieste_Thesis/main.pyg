@@ -1,0 +1,13 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def fibonacci(n):
+    """Restituisce la sequenza di Fibonacci fino a n."""
+    a, b = 0, 1
+    while a <= n:
+        yield a
+        a, b = b, a + b
+
+# Esempio d'uso
+fib = list(fibonacci(1000))
+print(fib[-1])  # stampa 987

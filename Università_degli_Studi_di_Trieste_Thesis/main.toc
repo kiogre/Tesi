@@ -1,0 +1,32 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{Contents}{ii}{chapter*.1}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduction to the Job Shop Problem (JSP)}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Mathematical representation, the Markov Decision Process (MDP)}{2}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}How to represent the Job Shop Problem as a Markov Decision Process}{3}{subsection.1.2.1}%
+\contentsline {subsubsection}{Example}{4}{section*.2}%
+\contentsline {section}{\numberline {1.3}Thesis structure}{6}{section.1.3}%
+\contentsline {chapter}{\numberline {2}Background}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Graph Convolutional Network (GCN)}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Long-Short Term Memory (LSTM)}{9}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Pointer network}{11}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Deep Reinforcement Learning}{11}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Methods applied}{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Data}{13}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Representation of the data in the article}{13}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Representation of data in the graph model}{14}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Architecture of the matrix model}{15}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Encoder}{15}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Decoder}{16}{subsection.3.2.2}%
+\contentsline {subsubsection}{Masks}{17}{section*.9}%
+\contentsline {section}{\numberline {3.3}Architecture of the graph model}{18}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Transformation from graph to matrix}{19}{subsection.3.3.1}%
+\contentsline {section}{\numberline {3.4}Training of the neural networks}{20}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Results and comparison}{22}{chapter.4}%
+\contentsline {section}{\numberline {4.1}$\mathbf {6\times 6}$ JSP}{22}{section.4.1}%
+\contentsline {section}{\numberline {4.2}$\mathbf {n\times m}$ JSP}{23}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Possible explanation of the performance of the model}{25}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Future works}{28}{section.4.4}%
+\contentsline {chapter}{Glossary}{29}{appendix*.17}%
+\contentsline {chapter}{Acronym}{31}{appendix*.22}%
+\contentsline {chapter}{\numberline {A}Ringraziamenti}{33}{appendix.A}%

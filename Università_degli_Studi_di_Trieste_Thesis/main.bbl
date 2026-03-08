@@ -1,0 +1,398 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{Garey1976}{article}{}
+      \name{author}{3}{}{%
+        {{hash=3d981c215c9c575d31bcca98c6d6c69d}{%
+           family={Garey},
+           familyi={G\bibinitperiod},
+           given={Michael\bibnamedelima R.},
+           giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=8f805225d8e433c29a18a566d1f6acc6}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={David\bibnamedelima S.},
+           giveni={D\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=b0e677112f976b0ff780553fcb888351}{%
+           family={Sethi},
+           familyi={S\bibinitperiod},
+           given={Ravi},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {INFORMS}%
+      }
+      \strng{namehash}{40e8ba4977a3804f998614b24360c6e2}
+      \strng{fullhash}{40e8ba4977a3804f998614b24360c6e2}
+      \strng{bibnamehash}{40e8ba4977a3804f998614b24360c6e2}
+      \strng{authorbibnamehash}{40e8ba4977a3804f998614b24360c6e2}
+      \strng{authornamehash}{40e8ba4977a3804f998614b24360c6e2}
+      \strng{authorfullhash}{40e8ba4977a3804f998614b24360c6e2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Mathematics of Operations Research}
+      \field{number}{2}
+      \field{title}{The Complexity of Flowshop and Jobshop Scheduling}
+      \field{volume}{1}
+      \field{year}{1976}
+      \field{pages}{117\bibrangedash 129}
+      \range{pages}{13}
+    \endentry
+    \entry{JSPWikipedia}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
+           family={{Wikipedia contributors}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://en.wikipedia.org/wiki/Job-shop_scheduling}}
+      \field{title}{Job-shop scheduling}
+    \endentry
+    \entry{Brucker2007}{article}{}
+      \name{author}{2}{}{%
+        {{hash=373121fe1e94871b2272a3840f703686}{%
+           family={Brucker},
+           familyi={B\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+        {{hash=a7fb1356c6ebcd1f5ac9e67bddc1baae}{%
+           family={Knust},
+           familyi={K\bibinitperiod},
+           given={Sigrid},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{c98c45a0684183a744ce7ce0e01b90ca}
+      \strng{fullhash}{c98c45a0684183a744ce7ce0e01b90ca}
+      \strng{bibnamehash}{c98c45a0684183a744ce7ce0e01b90ca}
+      \strng{authorbibnamehash}{c98c45a0684183a744ce7ce0e01b90ca}
+      \strng{authornamehash}{c98c45a0684183a744ce7ce0e01b90ca}
+      \strng{authorfullhash}{c98c45a0684183a744ce7ce0e01b90ca}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{GOR-Publications}
+      \field{title}{Complex Scheduling}
+      \field{year}{2007}
+    \endentry
+    \entry{sutton2018reinforcement}{book}{}
+      \name{author}{2}{}{%
+        {{hash=eb920e5277d3d5fd0903f3cd41e11871}{%
+           family={Sutton},
+           familyi={S\bibinitperiod},
+           given={Richard\bibnamedelima S},
+           giveni={R\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=32a0a208f8bcf56a13b0a8e618aa806a}{%
+           family={Barto},
+           familyi={B\bibinitperiod},
+           given={Andrew\bibnamedelima G},
+           giveni={A\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {MIT Press}%
+      }
+      \strng{namehash}{c6212f1a1407d96a3d9f4fefbb07eade}
+      \strng{fullhash}{c6212f1a1407d96a3d9f4fefbb07eade}
+      \strng{bibnamehash}{c6212f1a1407d96a3d9f4fefbb07eade}
+      \strng{authorbibnamehash}{c6212f1a1407d96a3d9f4fefbb07eade}
+      \strng{authornamehash}{c6212f1a1407d96a3d9f4fefbb07eade}
+      \strng{authorfullhash}{c6212f1a1407d96a3d9f4fefbb07eade}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Reinforcement Learning: An Introduction}
+      \field{year}{2018}
+    \endentry
+    \entry{LION17}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=7c6a79c4bcf9ede972cecec97df829bb}{%
+           family={Bonetta},
+           familyi={B\bibinitperiod},
+           given={Giovanni},
+           giveni={G\bibinitperiod}}}%
+        {{hash=ac7d81af4aca7752b7f03b893096c6bb}{%
+           family={Zago},
+           familyi={Z\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+        {{hash=d4144743a8c073891612f0c6ae8bc711}{%
+           family={Cancelliere},
+           familyi={C\bibinitperiod},
+           given={Rossella},
+           giveni={R\bibinitperiod}}}%
+        {{hash=335aab50cca23655daf565e0bf9abf17}{%
+           family={Grosso},
+           familyi={G\bibinitperiod},
+           given={Andrea},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{75f3eb6ccc773e4d11fd36200661eb39}
+      \strng{fullhash}{e3a136f6e14a4de1e0e9012f0406df9e}
+      \strng{bibnamehash}{75f3eb6ccc773e4d11fd36200661eb39}
+      \strng{authorbibnamehash}{75f3eb6ccc773e4d11fd36200661eb39}
+      \strng{authornamehash}{75f3eb6ccc773e4d11fd36200661eb39}
+      \strng{authorfullhash}{e3a136f6e14a4de1e0e9012f0406df9e}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Learning and Intelligent Optimization}
+      \field{series}{Lecture Notes in Computer Science}
+      \field{title}{Job Shop Scheduling via Deep Reinforcement Learning: a Sequence to Sequence approach}
+      \field{volume}{14286}
+      \field{year}{2023}
+      \field{pages}{475\bibrangedash 490}
+      \range{pages}{16}
+    \endentry
+    \entry{GitHub}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=eb9d8055b247992b49076a2574f598fd}{%
+           family={Chiorri},
+           familyi={C\bibinitperiod},
+           given={Marco},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{eb9d8055b247992b49076a2574f598fd}
+      \strng{fullhash}{eb9d8055b247992b49076a2574f598fd}
+      \strng{bibnamehash}{eb9d8055b247992b49076a2574f598fd}
+      \strng{authorbibnamehash}{eb9d8055b247992b49076a2574f598fd}
+      \strng{authornamehash}{eb9d8055b247992b49076a2574f598fd}
+      \strng{authorfullhash}{eb9d8055b247992b49076a2574f598fd}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://github.com/kiogre/Tesi/tree/main}}
+      \field{title}{Tesi}
+      \field{year}{2025}
+    \endentry
+    \entry{kipf2017semi}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=26d8bcbda6afaf96334bf47c8fb88a75}{%
+           family={Kipf},
+           familyi={K\bibinitperiod},
+           given={Thomas\bibnamedelima N},
+           giveni={T\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=53d2880ad8047b61cdae2c6b2803e763}{%
+           family={Welling},
+           familyi={W\bibinitperiod},
+           given={Max},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{e04e5808dc0d0ec733212b81e1f8c78a}
+      \strng{fullhash}{e04e5808dc0d0ec733212b81e1f8c78a}
+      \strng{bibnamehash}{e04e5808dc0d0ec733212b81e1f8c78a}
+      \strng{authorbibnamehash}{e04e5808dc0d0ec733212b81e1f8c78a}
+      \strng{authornamehash}{e04e5808dc0d0ec733212b81e1f8c78a}
+      \strng{authorfullhash}{e04e5808dc0d0ec733212b81e1f8c78a}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International Conference on Learning Representations}
+      \field{title}{Semi-Supervised Classification with Graph Convolutional Networks}
+      \field{year}{2017}
+    \endentry
+    \entry{hochreiter1997lstm}{article}{}
+      \name{author}{2}{}{%
+        {{hash=41b31e29fb2bdbf9f5c9c1b0d5b3e815}{%
+           family={Hochreiter},
+           familyi={H\bibinitperiod},
+           given={Sepp},
+           giveni={S\bibinitperiod}}}%
+        {{hash=288bdbcfe1b91ad7484d7a24f74f99ed}{%
+           family={Schmidhuber},
+           familyi={S\bibinitperiod},
+           given={Jürgen},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{4c2e1e2e1ac91e1df9d4f7b85ebe39b4}
+      \strng{fullhash}{4c2e1e2e1ac91e1df9d4f7b85ebe39b4}
+      \strng{bibnamehash}{4c2e1e2e1ac91e1df9d4f7b85ebe39b4}
+      \strng{authorbibnamehash}{4c2e1e2e1ac91e1df9d4f7b85ebe39b4}
+      \strng{authornamehash}{4c2e1e2e1ac91e1df9d4f7b85ebe39b4}
+      \strng{authorfullhash}{4c2e1e2e1ac91e1df9d4f7b85ebe39b4}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neural Computation}
+      \field{number}{8}
+      \field{title}{Long Short-Term Memory}
+      \field{volume}{9}
+      \field{year}{1997}
+      \field{pages}{1735\bibrangedash 1780}
+      \range{pages}{46}
+    \endentry
+    \entry{vinyals2015pointer}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=494b568c5dc85ba8f3f409635f9c5f25}{%
+           family={Vinyals},
+           familyi={V\bibinitperiod},
+           given={Oriol},
+           giveni={O\bibinitperiod}}}%
+        {{hash=dfc7f8069848dbc66435c3acc3172871}{%
+           family={Fortunato},
+           familyi={F\bibinitperiod},
+           given={Meire},
+           giveni={M\bibinitperiod}}}%
+        {{hash=5a9f30e0c0441d2aea255916ff375e8c}{%
+           family={Jaitly},
+           familyi={J\bibinitperiod},
+           given={Navdeep},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{a442a9bbb26362f27b11afa1b7ac9582}
+      \strng{fullhash}{a442a9bbb26362f27b11afa1b7ac9582}
+      \strng{bibnamehash}{a442a9bbb26362f27b11afa1b7ac9582}
+      \strng{authorbibnamehash}{a442a9bbb26362f27b11afa1b7ac9582}
+      \strng{authornamehash}{a442a9bbb26362f27b11afa1b7ac9582}
+      \strng{authorfullhash}{a442a9bbb26362f27b11afa1b7ac9582}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
+      \field{title}{Pointer Networks}
+      \field{year}{2015}
+    \endentry
+    \entry{williams1992simple}{article}{}
+      \name{author}{1}{}{%
+        {{hash=6cbc29ad7fd57ffdb9ed4728418fd988}{%
+           family={Williams},
+           familyi={W\bibinitperiod},
+           given={Ronald\bibnamedelima J},
+           giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{6cbc29ad7fd57ffdb9ed4728418fd988}
+      \strng{fullhash}{6cbc29ad7fd57ffdb9ed4728418fd988}
+      \strng{bibnamehash}{6cbc29ad7fd57ffdb9ed4728418fd988}
+      \strng{authorbibnamehash}{6cbc29ad7fd57ffdb9ed4728418fd988}
+      \strng{authornamehash}{6cbc29ad7fd57ffdb9ed4728418fd988}
+      \strng{authorfullhash}{6cbc29ad7fd57ffdb9ed4728418fd988}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Machine Learning}
+      \field{number}{3-4}
+      \field{title}{Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning}
+      \field{volume}{8}
+      \field{year}{1992}
+      \field{pages}{229\bibrangedash 256}
+      \range{pages}{28}
+    \endentry
+    \entry{Vesselinova2020}{article}{}
+      \name{author}{4}{}{%
+        {{hash=28c1071983b53b3ceef2be2b6f14da3a}{%
+           family={Vesselinova},
+           familyi={V\bibinitperiod},
+           given={Nataliya},
+           giveni={N\bibinitperiod}}}%
+        {{hash=7059a79c54084abb400a4b4f9d5ae806}{%
+           family={Steinert},
+           familyi={S\bibinitperiod},
+           given={Rebecca},
+           giveni={R\bibinitperiod}}}%
+        {{hash=a2d792949eeb2529b11912687b1737e5}{%
+           family={Perez-Ramirez},
+           familyi={P\bibinithyphendelim R\bibinitperiod},
+           given={Daniel\bibnamedelima F.},
+           giveni={D\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=1a78dfeefd7c8a969c5a70d264c12bd5}{%
+           family={Boman},
+           familyi={B\bibinitperiod},
+           given={Magnus},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{e6de576f16f899330e838b3ee3fa3778}
+      \strng{fullhash}{3c237bdc99106edd7f7bc680d7a9652c}
+      \strng{bibnamehash}{e6de576f16f899330e838b3ee3fa3778}
+      \strng{authorbibnamehash}{e6de576f16f899330e838b3ee3fa3778}
+      \strng{authornamehash}{e6de576f16f899330e838b3ee3fa3778}
+      \strng{authorfullhash}{3c237bdc99106edd7f7bc680d7a9652c}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Access}
+      \field{title}{Learning Combinatorial Optimization on Graphs: A Survey with Applications to Networking}
+      \field{volume}{8}
+      \field{year}{2020}
+      \field{pages}{120388\bibrangedash 120416}
+      \range{pages}{29}
+    \endentry
+    \entry{Hamilton2017}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=2abce6c40b4cc1a3d89f175883b24536}{%
+           family={Hamilton},
+           familyi={H\bibinitperiod},
+           given={William\bibnamedelima L.},
+           giveni={W\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=6b37c8aefa150635663b2a6525952a7a}{%
+           family={Ying},
+           familyi={Y\bibinitperiod},
+           given={Rex},
+           giveni={R\bibinitperiod}}}%
+        {{hash=900d107125ff0ca84698cb909e4f6c51}{%
+           family={Leskovec},
+           familyi={L\bibinitperiod},
+           given={Jure},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{f818fe3ba25dc2399831a69d9b62c7f0}
+      \strng{fullhash}{f818fe3ba25dc2399831a69d9b62c7f0}
+      \strng{bibnamehash}{f818fe3ba25dc2399831a69d9b62c7f0}
+      \strng{authorbibnamehash}{f818fe3ba25dc2399831a69d9b62c7f0}
+      \strng{authornamehash}{f818fe3ba25dc2399831a69d9b62c7f0}
+      \strng{authorfullhash}{f818fe3ba25dc2399831a69d9b62c7f0}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
+      \field{title}{Inductive Representation Learning on Large Graphs}
+      \field{year}{2017}
+      \field{pages}{1024\bibrangedash 1034}
+      \range{pages}{11}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

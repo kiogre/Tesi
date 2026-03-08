@@ -2,6 +2,8 @@ import Neural_Network as nn
 import Environment as env
 import Generate as gen
 import torch
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import os
 from tqdm import tqdm
@@ -78,17 +80,17 @@ def plot_comparison(gcn_metrics, lion_metrics, checkpoint_dir_gcn, checkpoint_di
     plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('performance_comparison_LION_LayerNorm_30x20.png')
+    #plt.savefig('performance_comparison_LION_LayerNorm_30x20.png')
     plt.show()
 
 def main():
     device = 'cpu'  # Usa CPU come nel tuo codice originale
     checkpoint_dir_gcn = './checkpoint_GCN_LayerNorm/'  # Directory per GCN (graph=True)
     checkpoint_dir_lion = './checkpoint_CPU/'  # Directory per Lion17 (graph=False)
-    n_jobs = 30
-    n_machines = 20
+    n_jobs = 10
+    n_machines = 5
     d_model = 128
-    n_samples = 100  # Numero di istanze per la valutazione
+    n_samples = 1  # Numero di istanze per la valutazione
     
     print(f"Utilizzo del dispositivo: {device}")
     
